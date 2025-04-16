@@ -4,22 +4,30 @@ import bcrypt from "bcryptjs";
 import db from "@/libs/db";
 
 export async function POST(request: Request) {
-  const body = await request.json();
-  const { email, name, password } = body;
+  try {
+    const body = await request.json();
+    const { email, name, password } = body;
 
-  const salt = await bcrypt.genSalt(10);
+    const salt = await bcrypt.genSalt(10);
 
-  const hashedPassword = await bcrypt.hash(password, salt);
+    const hashedPassword = await bcrypt.hash(password, salt);
 
-  const user = await db.user.create({
-    data: {
-      email,
-      name,
-      hashedPassword,
-    },
-  });
+    const user = await db.user.create({
+      data: {
+        email,
+        name,
+        hashedPassword,
+      },
+    });
 
-  return NextResponse.json(user);
+    return NextResponse.json(user);
+  } catch (error) {
+    console.error("Registration error:", error);
+    return NextResponse.json(
+      { error: "Something went wrong!" },
+      { status: 400 }
+    );
+  }
 }
 
 // export async function POST(request: Request) {
