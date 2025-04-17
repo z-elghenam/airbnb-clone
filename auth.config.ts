@@ -23,32 +23,22 @@ export default {
         if (validatedFileds.success) {
           const { email, password } = validatedFileds.data;
 
-          if (!email || !password) {
-            throw new Error("Invalid credentials");
-          }
-
           const user = await db.user.findUnique({
             where: {
               email,
             },
           });
 
-          if (!user || !user.hashedPassword) {
-            throw new Error("Invalid credentials");
-          }
+          if (!user || !user.hashedPassword) return null
 
           const isCorrectPassword = await bcrypt.compare(
             password,
             user.hashedPassword
           );
-
-          if (!isCorrectPassword) {
-            throw new Error("Invalid credentials");
-          }
+          if (!isCorrectPassword) return null
 
           return user;
         }
-
         return null;
       },
     }),
