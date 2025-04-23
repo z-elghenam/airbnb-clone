@@ -6,6 +6,7 @@ import { Toaster } from "react-hot-toast";
 import RegisterModal from "@/components/modals/RegisterModal";
 import LoginModal from "@/components/modals/LoginModal";
 import { getCurrentUser } from "@/actions/getCurrentUser";
+import RentModal from "@/components/modals/RentModal";
 
 export const metadata: Metadata = {
   title: "Airbnb | Home",
@@ -27,6 +28,7 @@ export default async function RootLayout({
         <Toaster />
         <LoginModal />
         <RegisterModal />
+        <RentModal />
         <Navbar currentUser={currentUser} />
         <div className="pb-20 pt-28">{children}</div>
       </body>
