@@ -13,20 +13,12 @@ interface ImageUploadProps {
   onChange: (value: string) => void;
   value: string;
 }
-
 const ImageUpload = ({ onChange, value }: ImageUploadProps) => {
   // handler
   const handleUpload = useCallback(
     (result: any) => {
       console.log("Upload result:", result);
-      // Check if result has the expected structure
-      if (result?.info?.secure_url) {
-        onChange(result.info.secure_url);
-      } else if (result?.secure_url) {
-        onChange(result.secure_url);
-      } else {
-        console.error("Unexpected Cloudinary response format:", result);
-      }
+      onChange(result.info.secure_url);
     },
     [onChange]
   );

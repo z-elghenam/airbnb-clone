@@ -1,16 +1,27 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
+import { useMemo, useState } from "react";
+import axios from "axios";
+import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
+import toast from "react-hot-toast";
+import dynamic from "next/dynamic";
+
 import useRentModal from "@/hooks/useRentModal";
 import Modal from "./Modal";
-import { useMemo, useState } from "react";
 import Heading from "../Heading";
 import { categories } from "../navbar/Categories";
 import CategoryInput from "../inputs/CategoryInput";
-import { FieldValues, useForm } from "react-hook-form";
+
 import CountrySelect from "../inputs/CountrySelect";
-import Map from "../Map";
 import Counter from "../inputs/Counter";
 import ImageUpload from "../inputs/ImageUpload";
 import Input from "../inputs/Input";
+import { useRouter } from "next/navigation";
+
+// Dynamically import the Map component with SSR disabled
+const Map = dynamic(() => import("../Map"), {
+  ssr: false,
+});
 
 enum STEPS {
   CATEGORY = 0,
@@ -25,6 +36,8 @@ const RentModal = () => {
   const rentModal = useRentModal();
   const [step, setStep] = useState(STEPS.CATEGORY);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const router = useRouter();
 
   const {
     register,
@@ -54,12 +67,26 @@ const RentModal = () => {
   const bathroomCount = watch("bathroomCount");
   const imageSrc = watch("imageSrc");
 
+  console.log(imageSrc);
+
+  // const setCustomValue = (id: string, value: any) => {
+  //   setValue(id, value, {
+  //     shouldValidate: true,
+  //     shouldDirty: true,
+  //     shouldTouch: true,
+  //   });
+  // };
+
   const setCustomValue = (id: string, value: any) => {
+    // console.log(`Setting ${id} to:`, value);
     setValue(id, value, {
       shouldValidate: true,
       shouldDirty: true,
       shouldTouch: true,
     });
+
+    // Double check the value was set
+    // console.log(`After setting, ${id} is now:`, watch(id));
   };
 
   const onBack = () => {
@@ -77,6 +104,30 @@ const RentModal = () => {
 
     return "Next";
   }, [step]);
+
+  const onSubmit: SubmitHandler<FieldValues> = (data) => {
+    if (step !== STEPS.PRICE) {
+      return onNext();
+    }
+
+    setIsLoading(true);
+
+    axios
+      .post("/api/listings", data)
+      .then(() => {
+        toast.success("Listing Created!");
+        router.refresh();
+        reset();
+        setStep(STEPS.CATEGORY);
+        rentModal.onClose();
+      })
+      .catch(() => {
+        toast.error("Something went wrong!");
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  };
 
   const secondaryActionLabel = useMemo(() => {
     if (step === STEPS.CATEGORY) return undefined;
@@ -225,7 +276,7 @@ const RentModal = () => {
     <Modal
       isOpen={rentModal.isOpen}
       onClose={rentModal.onClose}
-      onSubmit={onNext}
+      onSubmit={handleSubmit(onSubmit)}
       actionLabel={actionLabel}
       secondaryActionLabel={secondaryActionLabel}
       secondaryAction={step === STEPS.CATEGORY ? undefined : onBack}
