@@ -72,6 +72,7 @@ const ListingCard = ({
             fill
             alt="Listing"
             src={data.imageSrc}
+            sizes="(width: 100%)"
             className="object-cover h-full w-full group-hover:scale-110 transition"
           />
           <div className="absolute top-3 right-3">
