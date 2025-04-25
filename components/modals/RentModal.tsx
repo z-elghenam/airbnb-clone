@@ -67,16 +67,6 @@ const RentModal = () => {
   const bathroomCount = watch("bathroomCount");
   const imageSrc = watch("imageSrc");
 
-  console.log(imageSrc);
-
-  // const setCustomValue = (id: string, value: any) => {
-  //   setValue(id, value, {
-  //     shouldValidate: true,
-  //     shouldDirty: true,
-  //     shouldTouch: true,
-  //   });
-  // };
-
   const setCustomValue = (id: string, value: any) => {
     // console.log(`Setting ${id} to:`, value);
     setValue(id, value, {
