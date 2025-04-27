@@ -12,7 +12,7 @@ export async function POST(request: Request, { params }: { params: IParams }) {
 
   if (!currentUser) return NextResponse.error();
 
-  const { listingId } = params;
+  const { listingId } = await params;
 
   if (!listingId || typeof listingId !== "string")
     throw new Error("Invalid ID");
@@ -41,7 +41,7 @@ export async function DELETE(
 
   if (!currentUser) return NextResponse.error();
 
-  const { listingId } = params;
+  const { listingId } = await params;
 
   if (!listingId || typeof listingId !== "string")
     throw new Error("Invalid ID");
