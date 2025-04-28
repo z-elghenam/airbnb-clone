@@ -5,7 +5,7 @@ import EmptyState from "@/components/EmptyState";
 import ListingCard from "@/components/listings/ListingCard";
 
 export default async function Home() {
-  const listings = await getListings();
+  const listings = await getListings({});
   const currentUser = await getCurrentUser();
 
   if (listings.length === 0) return <EmptyState showReset />;
