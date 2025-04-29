@@ -17,16 +17,27 @@ export async function POST(request: Request, { params }: { params: IParams }) {
   if (!listingId || typeof listingId !== "string")
     throw new Error("Invalid ID");
 
-  const favoriteIds = [...(currentUser.favoriteIds || [])];
+  // Option 1:
+  // const favoriteIds = [...(currentUser.favoriteIds || [])];
+  // favoriteIds.push(listingId);
+  // const user = await db.user.update({
+  //   where: {
+  //     id: currentUser.id,
+  //   },
+  //   data: {
+  //     favoriteIds,
+  //   },
+  // });
 
-  favoriteIds.push(listingId);
-
+  // Option 2:Using Prisma's push operator (simpler)
   const user = await db.user.update({
     where: {
       id: currentUser.id,
     },
     data: {
-      favoriteIds,
+      favoriteIds: {
+        push: listingId,
+      },
     },
   });
 
